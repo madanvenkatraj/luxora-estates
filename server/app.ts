@@ -11,6 +11,7 @@ import express, {
   type Response,
 } from "express";
 import cors from "cors";
+import fs from "node:fs";
 import { type Server } from "node:http";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -23,7 +24,9 @@ import {
 import { logger, type Logger } from "./logger";
 import { createRoutes } from "./routes";
 
-/** Localhost dev origins only — explicit allowlist, no credentials, never "*". */
+/** Explicit allowlist, no credentials, never "*". Localhost dev origins
+ * plus any comma-separated origins provided via CORS_ORIGINS, so a
+ * deployed frontend can POST inquiries without widening to "*". */
 const ALLOWED_ORIGINS = new Set<string>([
   "http://localhost:3000",
   "http://127.0.0.1:3000",
@@ -32,6 +35,10 @@ const ALLOWED_ORIGINS = new Set<string>([
   "http://localhost:4173",
   "http://127.0.0.1:4173",
 ]);
+for (const raw of (process.env.CORS_ORIGINS ?? "").split(",")) {
+  const origin = raw.trim();
+  if (origin.length > 0) ALLOWED_ORIGINS.add(origin);
+}
 
 /** JSON body cap. */
 const JSON_LIMIT = "16kb";
@@ -119,6 +126,33 @@ export function createApp(options: AppOptions = {}): Express {
   app.use(express.json({ limit: JSON_LIMIT }));
 
   app.use("/api", createRoutes({ store, rateLimiter, logger: log }));
+
+  /* Production serving: when dist/ exists and NODE_ENV is production,
+   * serve the built SPA. Mounted AFTER /api so the API keeps priority;
+   * the SPA fallback is express.static's own index rewriter, not a
+   * wildcard catch-all, so /api paths that miss still hit the central
+   * 404 JSON envelope below instead of returning HTML. */
+  const staticDir = path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "..",
+    "dist",
+  );
+  if (process.env.NODE_ENV === "production" && fs.existsSync(staticDir)) {
+    app.use(express.static(staticDir, { index: "index.html" }));
+    app.use((req, res, next) => {
+      // GETs that accept HTML get the SPA shell; API misses stay JSON 404.
+      const wantsHtml = (req.headers.accept ?? "").includes("text/html");
+      if (req.method !== "GET" || !wantsHtml) {
+        next();
+        return;
+      }
+      res.sendFile(path.join(staticDir, "index.html"), (err) => {
+        if (err && !res.headersSent) {
+          next(err);
+        }
+      });
+    });
+  }
 
   // Central 404 — one envelope shape everywhere.
   app.use((_req: Request, res: Response) => {
