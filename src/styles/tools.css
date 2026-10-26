@@ -1,0 +1,439 @@
+/* ============================================================
+   LUXORA ESTATES — tools & forms
+   Mortgage calculator, sell submission, contact page.
+   All colours/typography come from the tokens in index.css.
+   ============================================================ */
+
+/* ---------- Mortgage calculator ---------- */
+.calc-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  background: var(--white);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.calc-form {
+  padding: clamp(24px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+.calc-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4) var(--s-5);
+}
+.calc-hint {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.calc-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+}
+.calc-actions .form-note {
+  margin: 0;
+}
+.calc-results {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 100%);
+  color: var(--ivory);
+  padding: clamp(24px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.calc-results__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+.calc-emi {
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 4vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+.calc-rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding: 12px 0;
+  border-top: 1px solid rgba(248, 246, 240, 0.16);
+  font-size: 0.95rem;
+}
+.calc-row dt {
+  color: rgba(248, 246, 240, 0.66);
+}
+.calc-row dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ivory);
+  font-variant-numeric: tabular-nums;
+}
+.calc-foot {
+  margin-top: auto;
+  font-size: 0.78rem;
+  color: rgba(248, 246, 240, 0.55);
+  margin-bottom: 0;
+}
+.calc-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #ffd6cf;
+  font-size: 0.92rem;
+  margin: 0;
+}
+.calc-error svg {
+  flex: none;
+  margin-top: 2px;
+}
+.calc-note {
+  margin-top: var(--s-5);
+}
+
+/* ---------- Form cards (sell & contact) ---------- */
+.form-card {
+  background: var(--white);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  padding: clamp(24px, 4vw, 40px);
+}
+.form-card__head {
+  margin-bottom: var(--s-5);
+}
+.form-card__head p {
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4) var(--s-5);
+}
+.field--full {
+  grid-column: 1 / -1;
+}
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  margin-top: var(--s-5);
+}
+.form-actions .form-note {
+  margin: 0;
+}
+.form-note {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- Image picker (names only, nothing uploaded) ---------- */
+.file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.file-drop {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  border: 1px dashed var(--gold);
+  background: var(--gold-soft);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+}
+.file-drop svg {
+  color: var(--gold-2);
+  flex: none;
+}
+.file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 0;
+}
+.filechip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--ivory);
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  padding: 4px 6px 4px 12px;
+  font-size: 0.8rem;
+  color: var(--ink);
+  max-width: 100%;
+}
+.filechip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+.filechip button {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-soft);
+  flex: none;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.filechip button:hover {
+  color: var(--danger);
+  background: rgba(179, 56, 44, 0.1);
+}
+
+/* ---------- Demo confirmation panel ---------- */
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  border: 1px solid var(--gold);
+  background: var(--gold-soft);
+  border-radius: var(--r-lg);
+  padding: clamp(24px, 4vw, 40px);
+}
+.confirm__head {
+  display: flex;
+  gap: var(--s-4);
+  align-items: flex-start;
+}
+.confirm__icon {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--navy);
+  display: grid;
+  place-items: center;
+}
+.confirm__head h3 {
+  font-size: 1.18rem;
+  line-height: 1.35;
+}
+.confirm__head p {
+  margin-top: 6px;
+  font-size: 0.92rem;
+}
+.confirm__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.confirm__row {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: var(--s-4);
+  padding: 10px 0;
+  border-top: 1px solid rgba(20, 38, 61, 0.12);
+  font-size: 0.92rem;
+}
+.confirm__row dt {
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding-top: 3px;
+}
+.confirm__row dd {
+  margin: 0;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.confirm__actions {
+  display: flex;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+/* ---------- Sell section (home page + /sell) ---------- */
+.sell-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(32px, 5vw, 64px);
+  align-items: start;
+}
+.sell-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  margin-top: var(--s-6);
+}
+.sell-step {
+  display: flex;
+  gap: var(--s-4);
+}
+.sell-step__num {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  color: var(--gold-2);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.sell-step h3 {
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+.sell-step p {
+  font-size: 0.92rem;
+}
+.sell-trust {
+  margin-top: var(--s-6);
+}
+
+/* ---------- Contact page ---------- */
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 5vw, 56px);
+  align-items: start;
+}
+.contact-card {
+  background: var(--white);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(24px, 4vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.contact-lead {
+  font-size: 0.92rem;
+}
+.contact-row {
+  display: flex;
+  gap: var(--s-3);
+  align-items: flex-start;
+}
+.contact-row > svg {
+  color: var(--gold-2);
+  flex: none;
+  margin-top: 3px;
+}
+.contact-row__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.contact-row__value {
+  color: var(--ink);
+  font-weight: 500;
+  margin: 2px 0 0;
+}
+.tag--placeholder {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid var(--gold);
+  border-radius: var(--r-full);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.contact-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  margin: 0;
+}
+.contact-note {
+  margin-top: var(--s-4);
+}
+.link-inline {
+  color: var(--gold-2);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.link-inline:hover {
+  color: var(--navy);
+}
+.file-drop__sub {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+/* ---------- Tool explainer cards (/tools) ---------- */
+.tool-note {
+  background: var(--white);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--s-5);
+}
+.tool-note h3 {
+  font-size: 1.08rem;
+  margin-bottom: 8px;
+}
+.tool-note p {
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .calc-card,
+  .sell-grid,
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .calc-fields,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .confirm__row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .confirm__head {
+    flex-direction: column;
+  }
+}

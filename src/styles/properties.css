@@ -1,0 +1,350 @@
+/* ============================================================
+   /properties — listings engine: sidebar filters, chips,
+   results grid, Load More, view toggle.
+   Owns nothing global: all selectors are namespaced .props-*
+   and only style markup rendered by PropertiesPage/PropertyFilters.
+   ============================================================ */
+
+/* ---------- Layout: sidebar + results ---------- */
+.props-layout {
+  display: grid;
+  grid-template-columns: 288px 1fr;
+  gap: var(--s-6);
+  align-items: start;
+}
+
+/* ---------- Sidebar / filter panel ---------- */
+.props-sidebar {
+  position: relative;
+}
+
+.props-mobile-toggle {
+  display: none;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.props-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.props-panel {
+  background: var(--white);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  position: sticky;
+  top: 92px; /* below the sticky navbar */
+  max-height: calc(100vh - 116px);
+  overflow-y: auto;
+}
+
+.props-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.props-fieldset legend,
+.props-legend {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+/* Segmented Buy / Rent control */
+.props-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: var(--ivory-2);
+  border-radius: var(--r-md);
+  padding: 4px;
+}
+
+.props-seg-btn {
+  min-height: 40px;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  transition:
+    background var(--t-fast),
+    color var(--t-fast),
+    box-shadow var(--t-fast);
+}
+
+.props-seg-btn:hover {
+  color: var(--navy);
+}
+
+.props-seg-btn[aria-pressed="true"] {
+  background: var(--navy);
+  color: var(--ivory);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Amenity checkbox list */
+.props-amenities {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+}
+
+.props-check {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px 4px;
+  border-radius: var(--r-sm);
+  font-size: 0.88rem;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+
+.props-check:hover {
+  background: var(--gold-soft);
+}
+
+.props-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--gold-2);
+  flex: none;
+}
+
+/* Clear all button inside the panel */
+.props-clearall {
+  width: 100%;
+}
+
+/* ---------- Results header: count + view toggle ---------- */
+.props-resultbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--s-4);
+}
+
+.props-count {
+  font-size: 1rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.props-count strong {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  color: var(--navy);
+  margin-right: 4px;
+}
+
+.props-view-toggle {
+  display: inline-flex;
+  gap: 4px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  padding: 4px;
+}
+
+.props-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 1rem;
+  border-radius: var(--r-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.props-view-btn:hover {
+  color: var(--navy);
+}
+
+.props-view-btn[aria-pressed="true"] {
+  background: var(--navy);
+  color: var(--ivory);
+}
+
+/* ---------- Active filter chips ---------- */
+.props-chipbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-5);
+}
+
+.props-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0.2rem 0.4rem 0.2rem 0.8rem;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  font-size: 0.82rem;
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.props-chip-label {
+  letter-spacing: 0.01em;
+}
+
+.props-chip-x {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink-soft);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.props-chip-x:hover,
+.props-chip-x:focus-visible {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.props-chips-clear {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gold-2);
+  margin-left: var(--s-1);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 34px;
+  padding: 0 var(--s-2);
+}
+
+.props-chips-clear:hover {
+  color: var(--danger);
+}
+
+/* ---------- Results grid & Load More ---------- */
+.props-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 26px;
+}
+
+.props-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-7);
+}
+
+.props-more-count {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ---------- Map view ---------- */
+.props-mapwrap {
+  background: var(--white);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  padding: var(--s-4);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Empty state (extends the global .empty-state) ---------- */
+.props-empty .empty-state {
+  margin: var(--s-6) auto;
+}
+
+/* ---------- Mobile: collapsible filter panel ---------- */
+@media (max-width: 1024px) {
+  .props-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .props-mobile-toggle {
+    display: inline-flex;
+    margin-bottom: var(--s-3);
+  }
+
+  /* Collapsible panel: closed by default on mobile; the toggle sets
+     is-open. max-height + overflow animate the open state. */
+  .props-panel {
+    position: static;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 var(--s-5);
+    opacity: 0;
+    border-width: 0;
+    box-shadow: none;
+    transition:
+      max-height var(--t-med),
+      opacity var(--t-med),
+      padding var(--t-med),
+      border-width var(--t-med);
+  }
+
+  .props-panel.is-open {
+    max-height: 2400px;
+    opacity: 1;
+    padding: var(--s-5);
+    border-width: 1px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .props-amenities {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .props-amenities {
+    grid-template-columns: 1fr;
+  }
+
+  .props-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-3);
+  }
+
+  .props-resultbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .props-view-toggle {
+    align-self: stretch;
+  }
+
+  .props-view-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .props-panel {
+    transition: none;
+  }
+}
