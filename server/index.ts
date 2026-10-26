@@ -1,12 +1,14 @@
 /**
- * Bootstrap for the LUXORA ESTATES API.
+ * Bootstrap for the LUXORA ESTATES API / production server.
  *
- * Binds API_PORT env or 4000 — the Vite dev app owns 3000 and this file
- * never touches it.
+ * In production a host injects PORT — that wins. API_PORT keeps dev
+ * parity (the Vite dev app owns 3000; this file never touches it), and
+ * 4000 is the historical default. In production NODE_ENV the same app
+ * also serves dist/ statically (see app.ts).
  */
 import { createApp, startServer } from "./app";
 
-const PORT = Number(process.env.API_PORT ?? 4000);
+const PORT = Number(process.env.PORT ?? process.env.API_PORT ?? 4000);
 const app = createApp();
 const server = startServer(app, PORT);
 

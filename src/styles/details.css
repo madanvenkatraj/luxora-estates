@@ -383,6 +383,18 @@
   flex-direction: column;
   gap: 10px;
 }
+/* Validation alert surfaced at the click point (actions card), in the
+   same visual language as the form's inline error paragraphs. */
+.pd-form-alert {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--danger, #b3261e);
+  background: #fdecea;
+  border: 1px solid #f5c6c0;
+  border-radius: var(--r-sm, 8px);
+  padding: 10px 12px;
+}
 .pd-actions .btn {
   width: 100%;
 }

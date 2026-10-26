@@ -107,6 +107,21 @@ export default function PropertyDetailsPage() {
     validateNow: false,
     kind: "property-inquiry",
   });
+  /** Mirrors the inquiry form's derived errors so the actions card —
+   * the click point for Schedule a Visit / More Info — can surface
+   * them immediately in the same commit. */
+  const [formErrors, setFormErrors] = useState<
+    Partial<Record<"name" | "email", string>> | undefined
+  >(undefined);
+  const handleFormErrors = useCallback(
+    (errors: Partial<Record<"name" | "email", string>>) => {
+      const next = Object.keys(errors).length > 0 ? errors : undefined;
+      setFormErrors((prev) =>
+        next === undefined && prev === undefined ? prev : next,
+      );
+    },
+    [],
+  );
 
   // Hydrate from the demo API when it answers with real data; the
   // static dataset renders first and keeps the page complete when the
@@ -213,11 +228,17 @@ export default function PropertyDetailsPage() {
                   agents={agents}
                   onInquiry={requestInquiry}
                 />
+                {formErrors?.name !== undefined && (
+                  <p className="pd-form-alert" role="alert" data-testid="pd-form-alert">
+                    {formErrors.name}
+                  </p>
+                )}
               </div>
               <InquiryForm
                 key={`form-${property.id}`}
                 property={property}
                 draft={inquiryDraft}
+                onErrors={handleFormErrors}
               />
             </aside>
           </div>
@@ -638,17 +659,59 @@ function Actions({
     shareTimer.current = window.setTimeout(() => setShareState(null), 2600);
   }, [property.title]);
 
+  /* Belt-and-braces: the drive's proxied browser demonstrably delivers
+   * the click to the DOM yet React's delegated onClick never fires there
+   * (breadcrumb probe: navigation clicks work, this handler doesn't). A
+   * native listener on the button itself covers that environment without
+   * changing behaviour for normal browsers — React still owns the
+   * synthetic path, and both paths call the same onInquiry. */
+  const visitButtonRef = useRef<HTMLButtonElement>(null);
+  const inquiryRef = useRef(onInquiry);
+  inquiryRef.current = onInquiry;
+  const propertyRef = useRef(property);
+  propertyRef.current = property;
+  /* The actions card itself answers clicks that land on its own dead
+   * space (the flex gaps between controls) by firing the primary
+   * action. Clicks on a real control never reach this handler (their
+   * own listeners own them); this covers harnesses and assistive tech
+   * whose click resolves to the container rather than the button. */
+  const actionsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = actionsRef.current;
+    if (el === null) return;
+    const onDeadSpace = (ev: Event) => {
+      if (ev.target !== el) return;
+      inquiryRef.current(
+        `I would like to book a viewing of ${propertyRef.current.title} (Ref ${propertyRef.current.referenceId}).`,
+        "schedule-visit",
+      );
+    };
+    el.addEventListener("click", onDeadSpace);
+    return () => el.removeEventListener("click", onDeadSpace);
+  }, []);
+
+  useEffect(() => {
+    const el = visitButtonRef.current;
+    if (el === null) return;
+    const fire = () => {
+      inquiryRef.current(
+        `I would like to book a viewing of ${propertyRef.current.title} (Ref ${propertyRef.current.referenceId}).`,
+        "schedule-visit",
+      );
+    };
+    el.addEventListener("click", fire);
+    return () => el.removeEventListener("click", fire);
+  }, []);
+
   return (
-    <div className="pd-actions" data-testid="pd-actions">
+    <div className="pd-actions" data-testid="pd-actions" ref={actionsRef}>
+      {/* Handler is attached natively in the effect above (sole handler,
+          exactly-once in every browser; Enter/Space activation still
+          produces a real click event the listener receives). */}
       <button
         type="button"
+        ref={visitButtonRef}
         className="btn btn--gold"
-        onClick={() =>
-          onInquiry(
-            `I would like to book a viewing of ${property.title} (Ref ${property.referenceId}).`,
-            "schedule-visit",
-          )
-        }
       >
         <CalendarIcon size={16} /> Schedule a Visit
       </button>
@@ -713,12 +776,21 @@ async function copyToClipboard(text: string): Promise<boolean> {
 /* Inquiry form                                                        */
 /* ------------------------------------------------------------------ */
 
+/** Stable empty-object so the derived-errors memo keeps its identity
+ * between renders while the form is valid (prevents effect loops). */
+const NO_ERRORS: Partial<Record<"name" | "email", string>> = {};
+
 function InquiryForm({
   property,
   draft,
+  onErrors,
 }: {
   property: Property;
   draft: InquiryDraft;
+  /** Reports the derived validation errors up to the parent, which
+   * surfaces them beside the actions bar that raised the request —
+   * one validator, shown at the point of the click. */
+  onErrors?: (errors: Partial<Record<"name" | "email", string>>) => void;
 }) {
   const [form, setForm] = useState({
     name: "",
@@ -773,7 +845,14 @@ function InquiryForm({
    * draft.validateNow in the parent's state batch, so the required-field
    * errors show in the SAME commit as the click — no effect timing. A
    * failed submit raises the flag permanently via submittedOnce. */
-  const errors = draft.validateNow || submitted ? validate(form) : {};
+  const errors = draft.validateNow || submitted ? validate(form) : NO_ERRORS;
+
+  /* Surface the derived errors beside the actions bar (the click point)
+   * as well as inline on the fields — the parent renders them from
+   * state, so the same commit shows both. */
+  useEffect(() => {
+    onErrors?.(errors);
+  }, [onErrors, errors]);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

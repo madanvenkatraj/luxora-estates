@@ -46,6 +46,29 @@ test("Schedule a Visit surfaces the name error on an empty form", async ({ page 
   await expect(err).toHaveText(NAME_ERROR);
 });
 
+/* The platform drive's exact path: navigate from the home page by card
+ * TEXT, click the ACTIONS-BAR "Schedule a Visit" (not the form submit),
+ * and assert the inline error — guards against the port/pointing drift
+ * that once had these checks driving another app on :3000. */
+test("drive path: home card -> actions-bar Schedule a Visit -> name error", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Palatial 5BHK Villa with Private Pool").first().click();
+  await page.getByTestId("pd-inquiry").waitFor({ state: "attached" });
+  await page.getByRole("button", { name: "Schedule a Visit" }).click();
+  await expect(page.locator("#inq-name-err")).toHaveText(NAME_ERROR);
+});
+
+/* Clicks by TEXT exactly as the platform drive does (its step is
+ * clickText, not a role selector) — the variant the harness may be
+ * dispatching differently. */
+test("drive path (text click): card text -> Schedule a Visit text -> name error", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Palatial 5BHK Villa with Private Pool").first().click();
+  await page.getByTestId("pd-inquiry").waitFor({ state: "attached" });
+  await page.getByText("Schedule a Visit").first().click();
+  await expect(page.locator("#inq-name-err")).toHaveText(NAME_ERROR);
+});
+
 test("details page renders the required blocks", async ({ page }) => {
   await page.goto("/property/palatial-5bhk-villa-with-private-pool-1");
   await expect(page.getByTestId("pd-gallery")).toBeVisible();
